@@ -1,0 +1,23 @@
+{
+  "name": "et-helper",
+  "version": "1.0.0",
+  "description": "An app that allows users to track departments and employees using MySQL database. ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kelbri10/ET-Helper.git"
+  },
+  "author": "Kelsey Hughes",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kelbri10/ET-Helper/issues"
+  },
+  "homepage": "https://github.com/kelbri10/ET-Helper#readme",
+  "dependencies": {
+    "inquirer": "^7.3.3",
+    "mysql": "^2.18.1"
+  }
+}
