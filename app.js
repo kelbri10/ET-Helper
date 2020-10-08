@@ -10,7 +10,9 @@ const connection = mysql.createConnection({
 
     password: '', 
 
-    database: 'employee_tracker'
+    database: 'employee_tracker',
+
+    insecureAuth: true
 }); 
 
 connection.connect(err => { 
@@ -78,12 +80,16 @@ const addEmployee = () => {
         {
             type: 'list', 
             name: 'role', 
-            message: 'What is the employee\'s role?'
+            message: 'What is the employee\'s role?',
             choices: [
-                'Case Manager', 
-                'Rehab Counselor', 
-                'Help Desk Support', 
-                'Accountant'
+                'Retail Associate',
+                'Representative',
+                'Executive Assistant',
+                'Administrative Intern',
+                'UX Designer',
+                'Lawyer',
+                'Analyst',
+                'Technician'
             ]
         }
     ]
@@ -104,16 +110,16 @@ const removeEmployee = () => {
 const viewEmployees = () => { 
     connection.query('SELECT * FROM employee', (err, result, fields) =>{
         if(err) throw err; 
-        console.log(result); 
+        console.table(result); 
     })
 
     trackerStart(); 
 }
 
 const viewDepartments = () => { 
-    connection.query('SELECT * FROM department', (err, results, fields) => {
+    connection.query('SELECT * FROM department', (err, result, fields) => {
         if(err) throw err; 
-        console.log(result); 
+        console.table(result); 
     }); 
 
     trackerStart(); 

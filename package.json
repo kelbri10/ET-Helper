@@ -2,7 +2,7 @@
   "name": "et-helper",
   "version": "1.0.0",
   "description": "An app that allows users to track departments and employees using MySQL database. ",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
