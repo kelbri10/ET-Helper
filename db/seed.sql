@@ -1,10 +1,10 @@
 USE employee_tracker; 
 
-INSERT INTO department (id, name)
-VALUES (1, 'Case Management'), (2, 'IT Support'); 
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ('Johnny', 'Depp', 1, 1), ('Millie Bobby', 'Brown', 2, 2), ('Sherlock', 'Holmes', 6, 6), ('Harry','Potter', 7,7); 
 
-INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
-VALUES (1, 'Kelsey', 'Hughes', 1, 1), (2, 'Sarah', 'Lawrence', 1, 1), (3,'Lake', 'Darwin', 2, 2); 
+INSERT INTO role (title, salary, department_id)
+VALUES ('Retail Associate', 25000, 1), ('Representative', 28000, 1), ('Executive Assistant', 38000, 2), ('Administrative Intern', 15000, 2), ('UX Designer', 40000, 3), ('Lawyer', 60000, 4), ('Analyst', 40000, 5), ('Technician', 40000, 5); 
 
-INSERT INTO role (id, title, salary, department_id)
-VALUES (1,'Case Manager', 30000, 1), (2, 'Rehab Counselor', 25000, 1), (3, 'Help Desk', 55000, 2); 
+INSERT INTO department (name)
+VALUES ('Customer Service'), ('Adminstrative'), ('Design'), ('Legal'), ('Operations & IT'); 

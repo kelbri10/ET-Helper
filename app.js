@@ -64,12 +64,32 @@ const trackerStart = () => {
 
 
 const addEmployee = () => {
-    let quesitons = [
-        ''
+    let questions = [
+        {
+            type: 'input',
+            name: 'firstName',
+            message: 'What is the employee\'s first name?' 
+        }, 
+        {
+            type: 'input', 
+            name: 'lastName', 
+            message: 'What is the employee \'s last name?'
+        }, 
+        {
+            type: 'list', 
+            name: 'role', 
+            message: 'What is the employee\'s role?'
+            choices: [
+                'Case Manager', 
+                'Rehab Counselor', 
+                'Help Desk Support', 
+                'Accountant'
+            ]
+        }
     ]
 
     inquirer.prompt(questions).then(answers => { 
-        connection.query()
+        connection.query('INSERT INTO employee ')
     })
 }
 
@@ -82,10 +102,20 @@ const removeEmployee = () => {
 }
 
 const viewEmployees = () => { 
+    connection.query('SELECT * FROM employee', (err, result, fields) =>{
+        if(err) throw err; 
+        console.log(result); 
+    })
 
+    trackerStart(); 
 }
 
 const viewDepartments = () => { 
+    connection.query('SELECT * FROM department', (err, results, fields) => {
+        if(err) throw err; 
+        console.log(result); 
+    }); 
 
+    trackerStart(); 
 }
 
