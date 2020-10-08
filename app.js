@@ -1,56 +1,91 @@
+const mysql = require('mysql'); 
 const inquirer = require('inquirer'); 
 
-//What would you like to do? -list 
-    //add, update, remove employee 
-//for addEmployee ask for employees for first name, last name, id number, 
-//department 
-const question = [
-    {
-        type: 'list', 
-        name: 'action', 
-        message: 'What would you like to do?',
-        choices: ['Add Employee', 'Update Employee', 'Remove Employee']
-    }
-]
+const connection = mysql.createConnection({
+    host: 'localhost', 
 
-inquirer.prompt(question).then(answer =>{ 
-    //based on user answer, prompts further questions
-    switch(answer.action){
-        case 'Add Employee': 
-            addEmployee(); 
-            break; 
-        case 'Update Employee': 
-            updateEmployee(); 
-            break; 
-        case 'Remove Employee': 
-            removeEmployee(); 
-            break; 
-        default: 
-            console.log('there are no options'); 
-            break; 
-    } 
+    port: 3306, 
+
+    user: 'root', 
+
+    password: '', 
+
+    database: 'employee_tracker'
+}); 
+
+connection.connect(err => { 
+    if (err) throw err; 
+
+    console.log('Connection to database started!'); 
+    trackerStart(); 
 })
 
-const addEmployee = () => {
-    let questions = [
-        {
-            type: 'input', 
-            name: 'first_name', 
-            message: 'What is the employee\'s first name?' 
-        }, 
-        {
-            type: 'input', 
-            name: 'last_name', 
-            message: 'What is the employee\'s last name?'
-        }, 
+const trackerStart = () => { 
+    let question = [
         {
             type: 'list', 
-            name: 'role', 
-            choices: ['Sales Lead', 'Salesperson', 'Software Engineer', 'Account Manager', 'Accountant', 'Legal Team Lead', 'Lawyer']
+            name: 'action', 
+            message: 'What would you like to do?',
+            choices: [
+                'Add Employee', 
+                'Update Employee',
+                'Remove Employee', 
+                'View all employees', 
+                'View all departments', 
+                'Exit'
+            ]
         }
     ]
 
-    inquirer.prompt(questions).then(answers => {
-        console.log(answers); 
+    inquirer.prompt(question).then(answer => {
+        switch(answer.action){ 
+            case 'Add Employee': 
+                addEmployee(); 
+                break; 
+            case 'Update Employee': 
+                updateEmployee(); 
+                break; 
+            case 'Remove Employee': 
+                removeEmployee(); 
+                break; 
+            case 'View all employees': 
+                viewEmployees(); 
+                break; 
+            case 'View all departments': 
+                viewDepartments(); 
+                break; 
+            case 'Exit': 
+                console.log('Thank you for using the app.')
+                connection.end(); 
+                break; 
+        }
     })
 }
+
+
+const addEmployee = () => {
+    let quesitons = [
+        ''
+    ]
+
+    inquirer.prompt(questions).then(answers => { 
+        connection.query()
+    })
+}
+
+const updateEmployee = () => {
+
+}
+
+const removeEmployee = () => {
+
+}
+
+const viewEmployees = () => { 
+
+}
+
+const viewDepartments = () => { 
+
+}
+
