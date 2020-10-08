@@ -14,7 +14,8 @@ const question = [
 ]
 
 inquirer.prompt(question).then(answer =>{ 
-    switch(answer){
+    //based on user answer, prompts further questions
+    switch(answer.action){
         case 'Add Employee': 
             addEmployee(); 
             break; 
@@ -24,7 +25,10 @@ inquirer.prompt(question).then(answer =>{
         case 'Remove Employee': 
             removeEmployee(); 
             break; 
-    }
+        default: 
+            console.log('there are no options'); 
+            break; 
+    } 
 })
 
 const addEmployee = () => {
