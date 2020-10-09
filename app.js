@@ -1,5 +1,8 @@
 const mysql = require('mysql'); 
 const inquirer = require('inquirer'); 
+const chalk = require('chalk'); 
+const consoleTable = require('console.table'); 
+const log = console.log; 
 
 const connection = mysql.createConnection({
     host: 'localhost', 
@@ -18,7 +21,7 @@ const connection = mysql.createConnection({
 connection.connect(err => { 
     if (err) throw err; 
 
-    console.log('Connection to database started!'); 
+    log('Connection to database started!'); 
     trackerStart(); 
 })
 
@@ -57,7 +60,7 @@ const trackerStart = () => {
                 viewDepartments(); 
                 break; 
             case 'Exit': 
-                console.log('Thank you for using the app.')
+                log('Thank you for using the app.\n')
                 connection.end(); 
                 break; 
         }
@@ -80,22 +83,40 @@ const addEmployee = () => {
         {
             type: 'list', 
             name: 'role', 
-            message: 'What is the employee\'s role?',
+            message: 'Select the employee\'s ID:',
             choices: [
-                'Retail Associate',
-                'Representative',
-                'Executive Assistant',
-                'Administrative Intern',
-                'UX Designer',
-                'Lawyer',
-                'Analyst',
-                'Technician'
+                '1', 
+                '2', 
+                '3', 
+                '4', 
+                '5',
+                '6', 
+                '7',
+                '8'
+            ]
+        }, 
+        {
+            type: 'list', 
+            name: 'manager', 
+            message: 'Select the manager\'s ID:', 
+            choices: [
+                '1', 
+                '2', 
+                '3', 
+                '4', 
+                '5', 
+                '6'
             ]
         }
     ]
 
     inquirer.prompt(questions).then(answers => { 
-        connection.query('INSERT INTO employee ')
+        let query = `INSERT INTO employee (first_name, last_name, role_id, manager_id) 
+                    VALUES (${answers.firstName}, ${answers.lastName}, ${answers.role}, ${answers.manager});`
+        connection.query(query, (err, result, fields) =>{
+            if (err) throw err; 
+            log(chalk.bgBlue(`${answers.firstName} ${answers.lastName} has been added!`)); 
+        })
     })
 }
 
@@ -108,7 +129,8 @@ const removeEmployee = () => {
 }
 
 const viewEmployees = () => { 
-    connection.query('SELECT * FROM employee', (err, result, fields) =>{
+    let query = `SELECT * FROM employee`; 
+    connection.query(query, (err, result, fields) =>{
         if(err) throw err; 
         console.table(result); 
     })
@@ -117,7 +139,8 @@ const viewEmployees = () => {
 }
 
 const viewDepartments = () => { 
-    connection.query('SELECT * FROM department', (err, result, fields) => {
+    let query = `SELECT * FROM department`
+    connection.query(query, (err, result, fields) => {
         if(err) throw err; 
         console.table(result); 
     }); 
