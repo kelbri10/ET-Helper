@@ -21,7 +21,7 @@ const connection = mysql.createConnection({
 connection.connect(err => { 
     if (err) throw err; 
 
-    log('Connection to database started!'); 
+    log(chalk.bgBlueBright('Welcome to ET Helper!') + '\nWhere we meet all your tracking needs!'); 
     trackerStart(); 
 })
 
@@ -87,7 +87,8 @@ const addDepartment = () => {
     inquirer.prompt(question).then(answer => {
 
 
-        let query = `INSERT INTO department(name) VALUES (' + ${answer.name} + ')`; 
+        let query = `INSERT INTO department(name) 
+                    VALUES (' + ${answer.name} + ')`; 
 
         connection.query(query, (err, result) =>{
 
@@ -131,19 +132,15 @@ const addRole = () => {
     ]
 
     inquirer.prompt(questions).then(answers => {
-        let ansArray = [];
-
-        for (element of answers){ 
-            log(element);
-            ansArray.push(element); 
-        }
-
-       /* let query = `INSERT INTO table (role, salary, department_id) 
-        VALUES (${answers.role}, ${answers.salary}, ${answers.department_id})`
+    
+        let query = `INSERT INTO table (role, salary, department_id) 
+                     VALUES ('${answers.role}', '${answers.salary}', '${answers.department_id}')`
 
         connection.query(query, (err, result) => {
+
             log(chalk.bgBlueBright('Role has been added!')); 
-        }) */
+
+        }) 
 
     })
 }
@@ -207,10 +204,12 @@ const updateEmployee = () => {
 
 const removeEmployee = () => {
 
-}
+} */
 
 const viewEmployees = () => { 
+
     let query = `SELECT * FROM employee`; 
+
     connection.query(query, (err, result, fields) =>{
         if(err) throw err; 
         console.table(result); 
@@ -219,8 +218,22 @@ const viewEmployees = () => {
     trackerStart(); 
 }
 
+const viewRoles = () => {
+    let query = `SELECT * FROM role`; 
+
+    connection.query(query, (err, result) => {
+        if (err) throw err; 
+
+        console.table(result); 
+    })
+
+    trackerStart(); 
+}
+
 const viewDepartments = () => { 
-    let query = `SELECT * FROM department`
+
+    let query = `SELECT * FROM department`; 
+
     connection.query(query, (err, result, fields) => {
         if(err) throw err; 
         console.table(result); 
@@ -228,4 +241,3 @@ const viewDepartments = () => {
 
     trackerStart(); 
 }
-*/
