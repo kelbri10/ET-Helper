@@ -32,11 +32,13 @@ const trackerStart = () => {
             name: 'action', 
             message: 'What would you like to do?',
             choices: [
+                'Add Department', 
+                'Add Role', 
                 'Add Employee', 
-                'Update Employee',
-                'Remove Employee', 
-                'View all employees', 
-                'View all departments', 
+                'View All Departments', 
+                'View All Roles', 
+                'View All Employees', 
+                'Update Role', 
                 'Exit'
             ]
         }
@@ -44,20 +46,26 @@ const trackerStart = () => {
 
     inquirer.prompt(question).then(answer => {
         switch(answer.action){ 
+            case 'Add Department': 
+                addDepartment(); 
+                break; 
+            case 'Add Role': 
+                addRole(); 
+                break; 
             case 'Add Employee': 
                 addEmployee(); 
                 break; 
-            case 'Update Employee': 
-                updateEmployee(); 
+            case 'View All Departments': 
+                viewDepartments(); 
                 break; 
-            case 'Remove Employee': 
-                removeEmployee(); 
-                break; 
-            case 'View all employees': 
+            case 'View All Roles': 
+                viewRoles(); 
+                break;  
+            case 'View All Employees': 
                 viewEmployees(); 
                 break; 
-            case 'View all departments': 
-                viewDepartments(); 
+            case 'Update Role': 
+                updateRole(); 
                 break; 
             case 'Exit': 
                 log('Thank you for using the app.\n')
@@ -67,8 +75,81 @@ const trackerStart = () => {
     })
 }
 
+const addDepartment = () => {
+    let question = [
+        {
+            type: 'input', 
+            name: 'name', 
+            message: 'What department would you like to add?'
+        }
+    ]
 
-const addEmployee = () => {
+    inquirer.prompt(question).then(answer => {
+
+
+        let query = `INSERT INTO department(name) VALUES (' + ${answer.name} + ')`; 
+
+        connection.query(query, (err, result) =>{
+
+            if(err) throw err; 
+
+            log(chalk.bgBlueBright('Department has been added!')); 
+
+            log(`The new department\'s id is: ${result.insertId}`); 
+        });
+
+    }); 
+
+  
+} 
+
+const addRole = () => {
+    //ask what role the user wants added, the salary, and the department name
+    let questions = [
+        {
+            type: 'input', 
+            name: 'role', 
+            message: 'What is the name of the Role you would like to add?'
+        }, 
+        {
+            type: 'input', 
+            name: 'salary', 
+            message: 'What is the salary?'
+        }, 
+        {
+            type: 'input',
+            name: 'department', 
+            message: 'Select the Department:',
+            //needs for/of statement that iterates over the choices in the department table object after it has been converted to an array 
+            //push each of the chocies to an array
+            choices: [
+                'test', 
+                'test1', 
+                'test2'
+            ]
+        }
+    ]
+
+    inquirer.prompt(questions).then(answers => {
+        let ansArray = [];
+
+        for (element of answers){ 
+            log(element);
+            ansArray.push(element); 
+        }
+
+       /* let query = `INSERT INTO table (role, salary, department_id) 
+        VALUES (${answers.role}, ${answers.salary}, ${answers.department_id})`
+
+        connection.query(query, (err, result) => {
+            log(chalk.bgBlueBright('Role has been added!')); 
+        }) */
+
+    })
+}
+
+
+/*const addEmployee = () => {
     let questions = [
         {
             type: 'input',
@@ -147,4 +228,4 @@ const viewDepartments = () => {
 
     trackerStart(); 
 }
-
+*/
