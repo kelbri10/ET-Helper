@@ -4,6 +4,7 @@ const chalk = require('chalk');
 const consoleTable = require('console.table'); 
 const log = console.log; 
 
+//creates connection 
 const connection = mysql.createConnection({
     host: 'localhost', 
 
@@ -25,6 +26,7 @@ connection.connect(err => {
     trackerStart(); 
 })
 
+//prompts user to choose what function of the app they would like to use
 const trackerStart = () => { 
     let question = [
         {
@@ -42,9 +44,10 @@ const trackerStart = () => {
                 'Exit'
             ]
         }
-    ]
+    ];
 
     inquirer.prompt(question).then(answer => {
+    //according to user's response
         switch(answer.action){ 
             case 'Add Department': 
                 addDepartment(); 
@@ -75,6 +78,7 @@ const trackerStart = () => {
     })
 }
 
+//prompts user to input new department name, makes query to db and adds it to the db with auto_increment id
 const addDepartment = () => {
     let question = [
         {
@@ -82,13 +86,13 @@ const addDepartment = () => {
             name: 'name', 
             message: 'What department would you like to add?'
         }
-    ]
+    ];
 
     inquirer.prompt(question).then(answer => {
 
 
         let query = `INSERT INTO department(name) 
-                    VALUES (' + ${answer.name} + ')`; 
+                    VALUES ('${answer.name}')`; 
 
         connection.query(query, (err, result) =>{
 
@@ -104,49 +108,61 @@ const addDepartment = () => {
   
 } 
 
+//prompts user to input new role, salary, and department that the role belongs too 
 const addRole = () => {
-    //ask what role the user wants added, the salary, and the department name
-    let questions = [
-        {
-            type: 'input', 
-            name: 'role', 
-            message: 'What is the name of the Role you would like to add?'
-        }, 
-        {
-            type: 'input', 
-            name: 'salary', 
-            message: 'What is the salary?'
-        }, 
-        {
-            type: 'input',
-            name: 'department', 
-            message: 'Select the Department:',
-            //needs for/of statement that iterates over the choices in the department table object after it has been converted to an array 
-            //push each of the chocies to an array
-            choices: [
-                'test', 
-                'test1', 
-                'test2'
-            ]
+    let departments = []; 
+    let departmentQuery = `SELECT * 
+                        FROM department`; 
+    connection.query(departmentQuery, (err, result) =>{ 
+        for (let i of result){ 
+            departments.push(i);
         }
-    ]
-
-    inquirer.prompt(questions).then(answers => {
+        console.log(departments); 
+        let questions = [
+            {
+                type: 'input', 
+                name: 'role', 
+                message: 'What is the name of the Role you would like to add?'
+            }, 
+            {
+                type: 'input', 
+                name: 'salary', 
+                message: 'What is the salary?'
+            }, 
+            {
+                type: 'list',
+                name: 'department', 
+                message: 'Select the Department:',
+                choices: departments
+            }
+        ];
     
-        let query = `INSERT INTO table (role, salary, department_id) 
-                     VALUES ('${answers.role}', '${answers.salary}', '${answers.department_id}')`
+        inquirer.prompt(questions).then(answers => {
 
-        connection.query(query, (err, result) => {
+            departments.forEach(department => {
+                if (answers.department === department.name){
+                    return answers.id = department.id; 
+                }
+            }); 
 
+            console.log(answers);
+            
+            let query = `INSERT INTO role (title, salary, department_id) 
+            VALUES ('${answers.role}', '${answers.salary}', '${answers.id}')`
+
+            connection.query(query, (err, result) => {
+            //once user query is completed, user receives message that new role has been added to the db
             log(chalk.bgBlueBright('Role has been added!')); 
 
-        }) 
+            trackerStart(); 
+            }); 
+        });
+    }); 
 
-    })
 }
 
-
-/*const addEmployee = () => {
+//prompts user to answer questions regarding new employee information 
+const addEmployee = () => {
     let questions = [
         {
             type: 'input',
@@ -161,16 +177,9 @@ const addRole = () => {
         {
             type: 'list', 
             name: 'role', 
-            message: 'Select the employee\'s ID:',
+            message: 'Select the employee\'s role:',
             choices: [
-                '1', 
-                '2', 
-                '3', 
-                '4', 
-                '5',
-                '6', 
-                '7',
-                '8'
+               
             ]
         }, 
         {
@@ -178,44 +187,89 @@ const addRole = () => {
             name: 'manager', 
             message: 'Select the manager\'s ID:', 
             choices: [
-                '1', 
-                '2', 
-                '3', 
-                '4', 
-                '5', 
-                '6'
+              
             ]
         }
-    ]
+    ];
 
     inquirer.prompt(questions).then(answers => { 
+
         let query = `INSERT INTO employee (first_name, last_name, role_id, manager_id) 
                     VALUES (${answers.firstName}, ${answers.lastName}, ${answers.role}, ${answers.manager});`
+
         connection.query(query, (err, result, fields) =>{
             if (err) throw err; 
+            //once query is completed, user receives confirmation that new employee
             log(chalk.bgBlue(`${answers.firstName} ${answers.lastName} has been added!`)); 
-        })
-    })
+        });
+    });
 }
 
-const updateEmployee = () => {
+const updateRole = () => {
+    
+    
+    /*let initQuestion = [
+        {
+            type: 'list', 
+            name: 'choice', 
+            message: 'What would you like to update?',
+            choices: [
+                'Salary', 
+                'Title', 
+                'Department'
+            ]
+        }
+    ];
 
+    let newSalary = 
+
+    let newTitle = 
+    let newDepartment = [
+        {
+            type: 'input', 
+            name: 'department', 
+            message: 'What is the name of the new department?'
+        }
+    ]; 
+
+    inquirer.prompt(initQuestion).then(answer => { 
+        switch(answer.choice){
+            case 'Salary': 
+                inquirer.prompt(newSalary).then(answer => {
+
+
+                })
+                break; 
+            case 'Title': 
+                inquirer.prompt(newTitle).then(answer => {
+
+
+                })
+                break; 
+            case 'Department': 
+                inquirer.prompt(newDepartment).then(answer => {
+
+
+                })
+                break; 
+        }
+    });
 }
-
-const removeEmployee = () => {
-
-} */
+*/
 
 const viewEmployees = () => { 
 
-    let query = `SELECT * FROM employee`; 
+    let query = `SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, role.title, role.salary, role.department_id
+        FROM employee 
+        JOIN role ON employee.role_id = role.id
+        JOIN department ON role.department_id = department. id`; 
 
     connection.query(query, (err, result, fields) =>{
         if(err) throw err; 
         console.table(result); 
-    })
 
-    trackerStart(); 
+        trackerStart(); 
+    })
 }
 
 const viewRoles = () => {
@@ -223,11 +277,10 @@ const viewRoles = () => {
 
     connection.query(query, (err, result) => {
         if (err) throw err; 
-
         console.table(result); 
-    })
 
-    trackerStart(); 
+        trackerStart(); 
+    })
 }
 
 const viewDepartments = () => { 
@@ -237,7 +290,7 @@ const viewDepartments = () => {
     connection.query(query, (err, result, fields) => {
         if(err) throw err; 
         console.table(result); 
-    }); 
 
-    trackerStart(); 
+        trackerStart(); 
+    }); 
 }
