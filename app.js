@@ -40,7 +40,7 @@ const trackerStart = () => {
                 'View All Departments', 
                 'View All Roles', 
                 'View All Employees', 
-                'Update Role', 
+                'Update Employee Role', 
                 'Exit'
             ]
         }
@@ -67,8 +67,8 @@ const trackerStart = () => {
             case 'View All Employees': 
                 viewEmployees(); 
                 break; 
-            case 'Update Role': 
-                updateRole(); 
+            case 'Update Employee Role': 
+                updateEmployeeRole(); 
                 break; 
             case 'Exit': 
                 log('Thank you for using the app.\n')
@@ -90,7 +90,6 @@ const addDepartment = () => {
 
     inquirer.prompt(question).then(answer => {
 
-
         let query = `INSERT INTO department(name) 
                     VALUES ('${answer.name}')`; 
 
@@ -111,12 +110,14 @@ const addDepartment = () => {
 //prompts user to input new role, salary, and department that the role belongs too 
 const addRole = () => {
     let departments = []; 
-    let departmentQuery = `SELECT * 
-                        FROM department`; 
+    let departmentQuery = `SELECT * FROM department`; 
+
     connection.query(departmentQuery, (err, result) =>{ 
+
         for (let i of result){ 
             departments.push(i);
         }
+      
         console.log(departments); 
         let questions = [
             {
@@ -205,57 +206,84 @@ const addEmployee = () => {
     });
 }
 
-const updateRole = () => {
+const updateEmployeeRole = () => {
+    let employees = []; 
+    let roles = []; 
+
+    let employeeQuery = `SELECT CONCAT(first_name, ' ' , last_name) 
+                        AS employeeName, role_id FROM employee`; 
     
-    
-    /*let initQuestion = [
-        {
-            type: 'list', 
-            name: 'choice', 
-            message: 'What would you like to update?',
-            choices: [
-                'Salary', 
-                'Title', 
-                'Department'
+    let roleQuery = `SELECT role.id, role.title FROM role`; 
+
+    connection.query(employeeQuery, (err, result) => { 
+
+        for(let e of result){ 
+            employees.push(e.employeeName); 
+        }
+        
+
+        connection.query(roleQuery, (err, result) => {
+
+            for(let r of result){ 
+                roles.push({id: r.id, title: r.title}); 
+            };
+        
+
+            let questions = [
+                {
+                    type: 'list', 
+                    name: 'employee', 
+                    message: 'Select which employee you would like to update:', 
+                    choices: employees
+                }, 
+                {
+                    type: 'list', 
+                    name: 'newRole', 
+                    message: 'Select their new role: ', 
+                    choices: () => {
+                        let roleNames = [];
+                        for (let r of result){  
+                            roleNames.push(r.title); 
+                        }
+                        return roleNames; 
+                    }
+                }
             ]
-        }
-    ];
 
-    let newSalary = 
+            inquirer.prompt(questions).then(answers =>{
+                
+                roles.forEach(role => { 
+                    if (answers.newRole === role.title){ 
+                        return answers.newID = role.id; 
 
-    let newTitle = 
-    let newDepartment = [
-        {
-            type: 'input', 
-            name: 'department', 
-            message: 'What is the name of the new department?'
-        }
-    ]; 
+                    }
+                }); 
 
-    inquirer.prompt(initQuestion).then(answer => { 
-        switch(answer.choice){
-            case 'Salary': 
-                inquirer.prompt(newSalary).then(answer => {
-
-
+                employees.forEach(employee{ 
+                    if (answers.employee === employee.employeeName){ 
+                        return answers.employeeID = employee.
+                    }
                 })
-                break; 
-            case 'Title': 
-                inquirer.prompt(newTitle).then(answer => {
 
+                console.log(answers); 
+                
+                let newRoleQuery = `UPDATE employee
+                                    SET employee.role_id = ${answers.newID}
+                                    WHERE CONCAT(employee.first_name,' ', employee.last_name) = ${answers.employee}`; 
 
-                })
-                break; 
-            case 'Department': 
-                inquirer.prompt(newDepartment).then(answer => {
+                connection.query(newRoleQuery, (err, result) => {
+                    if (err) throw err; 
 
-
-                })
-                break; 
-        }
+                    log(chalk.bgBlueBright(`${answers.employee} has been updated!`)); 
+                    trackerStart();                     
+                }); 
+            }); 
+        }); 
+        
     });
+
 }
-*/
+
 
 const viewEmployees = () => { 
 
