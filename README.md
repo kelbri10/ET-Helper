@@ -67,10 +67,10 @@ const connection = mysql.createConnection({
 Follow the links to learn more about the packages and technologies used in making this project: 
 * [MySQL and NodeJS](https://www.w3schools.com/nodejs/nodejs_mysql.asp)
 * [Inquirer](https://www.npmjs.com/package/inquirer)
-* 
+
 
 ## Contributors 
-This project was created by Kelsey Hughes. You can view more of their projects on their github profile [here](https://www.github.com/kelbri10).
+This project was created by Kelsey Hughes. You can view more of their projects on their GitHub profile [here](https://www.github.com/kelbri10).
 
 ## License 
 This project is under the MIT license. 
