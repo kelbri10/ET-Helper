@@ -100,6 +100,8 @@ const addDepartment = () => {
             log(chalk.bgBlueBright('Department has been added!')); 
 
             log(`The new department\'s id is: ${result.insertId}`); 
+
+            trackerStart(); 
         });
 
     }); 
@@ -118,7 +120,6 @@ const addRole = () => {
             departments.push(i);
         }
       
-        console.log(departments); 
         let questions = [
             {
                 type: 'input', 
@@ -145,8 +146,6 @@ const addRole = () => {
                     return answers.id = department.id; 
                 }
             }); 
-
-            console.log(answers);
             
             let query = `INSERT INTO role (title, salary, department_id) 
             VALUES ('${answers.role}', '${answers.salary}', '${answers.id}')`
@@ -208,24 +207,29 @@ const addEmployee = () => {
 
 const updateEmployeeRole = () => {
     let employees = []; 
+    let employeesNames = []; 
+    let roleNames = []; 
     let roles = []; 
 
     let employeeQuery = `SELECT CONCAT(first_name, ' ' , last_name) 
-                        AS employeeName, role_id FROM employee`; 
+                        AS employeeName, role_id, employee.id FROM employee`; 
     
     let roleQuery = `SELECT role.id, role.title FROM role`; 
 
     connection.query(employeeQuery, (err, result) => { 
 
-        for(let e of result){ 
-            employees.push(e.employeeName); 
+        for(let e of result){  
+            employeesNames.push(e.employeeName); 
+            employees.push(e)
         }
         
+        console.log(employees); 
 
         connection.query(roleQuery, (err, result) => {
 
             for(let r of result){ 
-                roles.push({id: r.id, title: r.title}); 
+                roleNames.push(r.title);
+                roles.push(r);  
             };
         
 
@@ -234,19 +238,13 @@ const updateEmployeeRole = () => {
                     type: 'list', 
                     name: 'employee', 
                     message: 'Select which employee you would like to update:', 
-                    choices: employees
+                    choices: employeesNames
                 }, 
                 {
                     type: 'list', 
                     name: 'newRole', 
                     message: 'Select their new role: ', 
-                    choices: () => {
-                        let roleNames = [];
-                        for (let r of result){  
-                            roleNames.push(r.title); 
-                        }
-                        return roleNames; 
-                    }
+                    choices: roleNames
                 }
             ]
 
@@ -255,21 +253,20 @@ const updateEmployeeRole = () => {
                 roles.forEach(role => { 
                     if (answers.newRole === role.title){ 
                         return answers.newID = role.id; 
-
                     }
                 }); 
 
-               /* employees.forEach(employee => { 
+                employees.forEach(employee => { 
                     if (answers.employee === employee.employeeName){ 
-                        return answers.employeeID = employee.
-                    };
-                } */
+                        return answers.empID = employee.id; 
+                    }
+                })
 
                 console.log(answers); 
                 
                 let newRoleQuery = `UPDATE employee
                                     SET employee.role_id = ${answers.newID}
-                                    WHERE CONCAT(employee.first_name,' ', employee.last_name) = ${answers.employee}`; 
+                                    WHERE employee.id = ${answers.empID}`; 
 
                 connection.query(newRoleQuery, (err, result) => {
                     if (err) throw err; 
@@ -287,10 +284,11 @@ const updateEmployeeRole = () => {
 
 const viewEmployees = () => { 
 
-    let query = `SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, role.title, role.salary, role.department_id
-        FROM employee 
-        JOIN role ON employee.role_id = role.id
-        JOIN department ON role.department_id = department. id`; 
+    let query = `SELECT CONCAT(first_name, ' ', last_name) AS Name, role.title as Position, role.salary as Salary, 
+                role.department_id, department.name AS Department
+                FROM employee 
+                JOIN role ON employee.role_id = role.id
+                JOIN department ON role.department_id = department.id`; 
 
     connection.query(query, (err, result, fields) =>{
         if(err) throw err; 
