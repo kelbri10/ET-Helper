@@ -4,7 +4,8 @@
 * [Description](#Description)
 * [Installation](#Installation)
 * [Features](#Usage)
-* [Coming Soon](#ComingSoon)
+* [Coming Soon](#Coming-Soon)
+* [Extended Reading](#Extended-Reading)
 * [Contributors](#Contributors)
 * [License](#License)
 
@@ -14,14 +15,16 @@ Keeping track of your employees can be difficult. What if there was an app that 
 ## Installation
 In order to utilize this application you must have the following packages installed: 
 * Inquirer
-* MySQL 
+* MySQL
+
+To download a free MySQL database, click [here](https://www.mysql.com/downloads/).
 
 To install inquirer: 
 ```
 npm i inquirer
 ```
 
-To install MySQL: 
+To install MySQL as an npm package: 
 ```
 npm i mysql
 ```
@@ -55,13 +58,19 @@ const connection = mysql.createConnection({
 ## Features 
 
 ## Coming Soon 
-- [ ] When user views all employees, manager name appears instead of manager id
-- [ ] UPDATE employee info 
+- [ ] VIEW employees by manager
+- [ ] UPDATE employee manager
 - [ ] UPDATE departments 
 - [ ] DELETE departments, roles, and employees
 
+## Extended Reading
+Follow the links to learn more about the packages and technologies used in making this project: 
+* [MySQL and NodeJS](https://www.w3schools.com/nodejs/nodejs_mysql.asp)
+* [Inquirer](https://www.npmjs.com/package/inquirer)
+* 
+
 ## Contributors 
-This project was created by Kelsey Hughes. You can view more of their projects here.
+This project was created by Kelsey Hughes. You can view more of their projects on their github profile [here](https://www.github.com/kelbri10).
 
 ## License 
 This project is under the MIT license. 
