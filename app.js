@@ -259,11 +259,11 @@ const updateEmployeeRole = () => {
                     }
                 }); 
 
-                employees.forEach(employee{ 
+               /* employees.forEach(employee => { 
                     if (answers.employee === employee.employeeName){ 
                         return answers.employeeID = employee.
-                    }
-                })
+                    };
+                } */
 
                 console.log(answers); 
                 
