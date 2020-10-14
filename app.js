@@ -12,7 +12,7 @@ const connection = mysql.createConnection({
 
     user: 'root', 
 
-    password: 'Phoenix25', 
+    password: '', 
 
     database: 'employee_tracker',
 
@@ -168,56 +168,53 @@ const addEmployee = () => {
     let managerNames = []; 
     let managerIDs = []; 
 
-    let departmentQuery = `SELECT * FROM department`; 
     let roleQuery = `SELECT role.id, role.title, role.department_id FROM role`; 
     let managerQuery = `SELECT CONCAT(first_name, ' ', last_name) 
                         AS manager, role_id FROM employee 
                         WHERE manager_id = NULL`; 
     
-    connection.query(departmentQuery, (err, result) => { 
-        for (let d of result){ 
-            departments.push(i); 
+  
+    connection.query(roleQuery, (err, result) =>{
+        for (let r of result){ 
+            roleNames.push(r.title); 
+            roles.push(r); 
         }
 
-        connection.query(roleQuery, (err, result) =>{
-            for (let r of result){ 
-                roleNames.push(r.title); 
-                roles.push(r); 
+        connection.query(managerQuery, (err, result) => { 
+
+            for (let m of result){ 
+                managerNames.push(m.manager); 
+                managerIDs.push(m.role_id); 
             }
 
-            connection.query(managerQuery, (err, result) => { 
-
-                for (let m of result){ 
-                    managerNames.push(m.manager); 
-                    managerIDs.push(m.role_id); 
+            let questions = [
+                {
+                    type: 'input',
+                    name: 'firstName',
+                    message: 'What is the employee\'s first name?' 
+                }, 
+                {
+                    type: 'input', 
+                    name: 'lastName', 
+                    message: 'What is the employee \'s last name?'
+                }, 
+                {
+                    type: 'list', 
+                    name: 'role', 
+                    message: 'Select their role: ', 
+                    choices: roles
                 }
+            ]
 
-                let questions = [
-                    {
-                        type: 'input',
-                        name: 'firstName',
-                        message: 'What is the employee\'s first name?' 
-                    }, 
-                    {
-                        type: 'input', 
-                        name: 'lastName', 
-                        message: 'What is the employee \'s last name?'
-                    }, 
-                    {
-                        type: 'list', 
-                        name: 'department', 
-                        message: 'Select their role: ', 
-                        choices: roles
-                    }
-                ]
+            inquirer.prompt(questions).then(answers => { 
 
-                inquirer.prompt(questions).then(answers => { 
-                    /*let addQuery = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
-                                    VALUES(${answers.firstName}, ${answers.lastName}, ${answers.roleID}, )` */
-                })
-            });
+                log(answers); 
+                /*let addQuery = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+                                VALUES(${answers.firstName}, ${answers.lastName}, ${answers.roleID}, )` */
+            })
         });
     });
+
 
 } 
 
