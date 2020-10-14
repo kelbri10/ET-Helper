@@ -186,8 +186,6 @@ const addEmployee = () => {
                 managerNames.push(m.managerName); 
                 managers.push({name: m.managerName, id: m.role_id}); 
             }
-            log(managerNames); 
-            log(managers); 
 
             let questions = [
                 {
@@ -213,7 +211,6 @@ const addEmployee = () => {
                 }
             ]
 
-            log(managerNames); 
             inquirer.prompt(questions).then(answers => { 
 
                 roles.forEach(role =>{ 
@@ -245,11 +242,13 @@ const addEmployee = () => {
 
                 }else{ 
 
-                    let addQuery = `INSERT INTO employee(first_name, last_name, role_id)
-                                    VALUES(${newEmployee.firstName}, ${newEmployee.lastName}, ${newEmployee.roleID})`; 
+                    let addQuery = `INSERT INTO employee (first_name, last_name, role_id)
+                                    VALUES('${newEmployee.firstName}', '${newEmployee.lastName}', '${newEmployee.roleID}')`; 
 
                     connection.query(addQuery, (err, result)=>{
+                        log(addQuery); 
                         log(chalk.bgBlueBright(`${newEmployee.firstName} ${newEmployee.lastName} has been added!`)); 
+                        trackerStart(); 
                     }); 
                 }
 
