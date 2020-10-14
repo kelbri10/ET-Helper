@@ -207,7 +207,7 @@ const addEmployee = () => {
                 {
                     type: 'confirm', 
                     name: 'hasManager', 
-                    message: 'Does this employee have a manager?', 
+                    message: 'Is this employee a manager?', 
                 }
             ]
 
@@ -220,41 +220,44 @@ const addEmployee = () => {
                 }); 
 
                 let newEmployee = answers; 
-                
-                if (newEmployee.hasManager){ 
-                   
+
+                if(newEmployee.isManager){ 
+                    let addQuery = `INSERT INTO employee (first_name, last_name, role_id)
+                    VALUES('${newEmployee.firstName}', '${newEmployee.lastName}', '${newEmployee.roleID}')`; 
+
+                    connection.query(addQuery, (err, result)=>{
+                        log(chalk.bgBlueBright(`${newEmployee.firstName} ${newEmployee.lastName} has been added!`)); 
+                        trackerStart(); 
+                    });
+
+                }else{
+                    
                    inquirer.prompt({
-                        type:'list', 
-                        name: 'Select their manager: ', 
-                        choices: managerNames
+                    type:'list', 
+                    name: 'manager', 
+                    message: 'Select their manager:',
+                    choices: managerNames
                     }).then(answer =>{ 
-                        
-                        
-                        for (let manager of managers){ 
+                    
+                        managers.forEach(manager=>{ 
                             if (answer.manager === manager.name){ 
                                 return newEmployee.managerID = manager.id; 
                             }
-                        }
+                        }); 
 
-                        log(newEmployee); 
+                        let addQuery = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+                                        VALUES('${newEmployee.firstName}', '${newEmployee.lastName}', '${newEmployee.roleID}', '${newEmployee.managerID}')`;
                         
-                    }); 
+                        connection.query(addQuery, (err, result)=>{
+                            log(chalk.bgBlueBright(`${newEmployee.firstName} ${newEmployee.lastName} has been added!`));
+                            trackerStart(); 
+                        }); 
 
-                }else{ 
-
-                    let addQuery = `INSERT INTO employee (first_name, last_name, role_id)
-                                    VALUES('${newEmployee.firstName}', '${newEmployee.lastName}', '${newEmployee.roleID}')`; 
-
-                    connection.query(addQuery, (err, result)=>{
-                        log(addQuery); 
-                        log(chalk.bgBlueBright(`${newEmployee.firstName} ${newEmployee.lastName} has been added!`)); 
-                        trackerStart(); 
                     }); 
                 }
 
                 
-               /* let addQuery = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
-                                VALUES(${answers.firstName}, ${answers.lastName}, ${answers.roleID}, )` */
+               
             });
         });
     
