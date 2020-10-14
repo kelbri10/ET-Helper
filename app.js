@@ -166,12 +166,12 @@ const addEmployee = () => {
     let roleNames = []; 
     let roles = []; 
     let managerNames = []; 
-    let managerIDs = []; 
+    let managers = []; 
 
     let roleQuery = `SELECT role.id, role.title, role.department_id FROM role`; 
     let managerQuery = `SELECT CONCAT(first_name, ' ', last_name) 
-                        AS manager, role_id FROM employee 
-                        WHERE manager_id = NULL`; 
+                        AS managerName, role_id FROM employee 
+                        WHERE manager_id IS NULL`; 
     
   
     connection.query(roleQuery, (err, result) =>{
@@ -183,9 +183,11 @@ const addEmployee = () => {
         connection.query(managerQuery, (err, result) => { 
 
             for (let m of result){ 
-                managerNames.push(m.manager); 
-                managerIDs.push(m.role_id); 
+                managerNames.push(m.managerName); 
+                managers.push({name: m.managerName, id: m.role_id}); 
             }
+            log(managerNames); 
+            log(managers); 
 
             let questions = [
                 {
@@ -202,19 +204,62 @@ const addEmployee = () => {
                     type: 'list', 
                     name: 'role', 
                     message: 'Select their role: ', 
-                    choices: roles
+                    choices: roleNames
+                }, 
+                {
+                    type: 'confirm', 
+                    name: 'hasManager', 
+                    message: 'Does this employee have a manager?', 
                 }
             ]
 
+            log(managerNames); 
             inquirer.prompt(questions).then(answers => { 
 
-                log(answers); 
-                /*let addQuery = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
-                                VALUES(${answers.firstName}, ${answers.lastName}, ${answers.roleID}, )` */
-            })
-        });
-    });
+                roles.forEach(role =>{ 
+                   if (answers.role === role.title){
+                       return answers.roleID = role.id; 
+                   }; 
+                }); 
 
+                let newEmployee = answers; 
+                
+                if (newEmployee.hasManager){ 
+                   
+                   inquirer.prompt({
+                        type:'list', 
+                        name: 'Select their manager: ', 
+                        choices: managerNames
+                    }).then(answer =>{ 
+                        
+                        
+                        for (let manager of managers){ 
+                            if (answer.manager === manager.name){ 
+                                return newEmployee.managerID = manager.id; 
+                            }
+                        }
+
+                        log(newEmployee); 
+                        
+                    }); 
+
+                }else{ 
+
+                    let addQuery = `INSERT INTO employee(first_name, last_name, role_id)
+                                    VALUES(${newEmployee.firstName}, ${newEmployee.lastName}, ${newEmployee.roleID})`; 
+
+                    connection.query(addQuery, (err, result)=>{
+                        log(chalk.bgBlueBright(`${newEmployee.firstName} ${newEmployee.lastName} has been added!`)); 
+                    }); 
+                }
+
+                
+               /* let addQuery = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+                                VALUES(${answers.firstName}, ${answers.lastName}, ${answers.roleID}, )` */
+            });
+        });
+    
+    }); 
 
 } 
 
