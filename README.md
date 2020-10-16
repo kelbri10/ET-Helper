@@ -64,6 +64,7 @@ Features included in this application:
 - [ x ] VIEW all roles, departments, and employees in your database 
 
 ![demo of adding a new role](img/addRole.gif)
+![demo of adding a new employee](img/newEmployee.gif)
 
 ## Coming Soon 
 - [ ] VIEW employees by manager
