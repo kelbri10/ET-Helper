@@ -56,6 +56,13 @@ const connection = mysql.createConnection({
 }); 
 ```
 ## Features 
+To watch a video demoing the features of this app, click [here](https://youtu.be/sb03Vsq5VgE). 
+
+Features included in this application: 
+- [ x ] UPDATE your employee's role 
+- [ x ] ADD departments, roles, and new employees
+- [ x ] VIEW all roles, departments, and employees in your database 
+
 
 ## Coming Soon 
 - [ ] VIEW employees by manager

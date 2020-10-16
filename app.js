@@ -206,7 +206,7 @@ const addEmployee = () => {
                 }, 
                 {
                     type: 'confirm', 
-                    name: 'hasManager', 
+                    name: 'isManager', 
                     message: 'Is this employee a manager?', 
                 }
             ]
