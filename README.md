@@ -56,7 +56,7 @@ const connection = mysql.createConnection({
 }); 
 ```
 ## Features 
-To watch a video demoing the features of this app, click [here](https://youtu.be/sb03Vsq5VgE). 
+To watch a video demoing the features of this app, click [here](https://www.youtube.com/watch?v=qu1k8YYp39E&feature=youtu.be). 
 
 Features included in this application: 
 - [ x ] UPDATE your employee's role 
